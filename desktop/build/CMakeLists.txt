@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 # set a name and version of project
-project(duos-pad VERSION 1.0.0)
+project(duos-pad VERSION 1.0)
 
 # set c amd c++ compiler for riscv64
 # set(CMAKE_C_COMPILER riscv64-unknown-linux-musl-gcc)

@@ -16,7 +16,7 @@
 /*本程序版本相关的宏定义*/
 #define MAIN_VERSION_MAJOR  1
 #define MAIN_VERSION_MINOR  0
-#define MAIN_VERSION_PATCH  0
+#define MAIN_VERSION_PATCH  1
 #define MAIN_VERSION_INFO   ""
 
 /*应用文件读取相关的宏定义*/
@@ -64,16 +64,22 @@ static void set_fil_sys_dir(void) {
 
 static void lod_inf(void) {
     /*读取app目录的内容并写入到APP_LST_FIL文件中*/
-    char app_dir[DIR_MAX_LEN];  /*应用目录*/
-    strcpy(app_dir, slf_dir);   /*复制slf_dir至app_dir*/
-    strcat(app_dir, "app");     /*在app_dir末尾追加"app/"得到应用目录*/
+    char app_dir[DIR_MAX_LEN];      /*应用目录*/
+    strcpy(app_dir, slf_dir);       /*复制slf_dir至app_dir*/
+    strcat(app_dir, "app");         /*在app_dir末尾追加"app/"得到应用目录*/
     sprintf(cmd_buf,
         "ls -d --color=none %s/*/ > %s/%s",
         app_dir,
         app_dir,
-        APP_LST_FIL);           /*生成格式化命令*/
-    system("mkdir app");        /*创建app目录*/
-    system(cmd_buf);            /*执行命令：读取app目录的内容并写入到APP_LST_FIL文件中*/
+        APP_LST_FIL);               /*生成格式化命令*/
+    if(256 == system(cmd_buf)) {
+        char tmp_buf[CMD_MAX_LEN];
+        sprintf(tmp_buf,
+            "mkdir %s/app",
+            slf_dir);               /*生成格式化命令*/
+        system(tmp_buf);            /*创建app目录*/
+    }
+    system(cmd_buf);                /*执行命令：读取app目录的内容并写入到APP_LST_FIL文件中*/
 
     /*获取应用数量并写入到APP_CNT_FIL文件中*/
     sprintf(cmd_buf,
