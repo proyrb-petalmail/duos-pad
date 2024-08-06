@@ -2,20 +2,21 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 # set a name and version of project
-project(setup VERSION 0.1.0)
+project(setup VERSION 0.2.0)
 
 # set c amd c++ compiler for riscv64
-# set(CMAKE_C_COMPILER riscv64-unknown-linux-musl-gcc)
-# set(CMAKE_CXX_COMPILER riscv64-unknown-linux-musl-g++)
+set(CMAKE_C_COMPILER riscv64-unknown-linux-musl-gcc)
+set(CMAKE_CXX_COMPILER riscv64-unknown-linux-musl-g++)
 
 # set c amd c++ compiler for aarch64
-set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)
-set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)
+# set(CMAKE_C_COMPILER aarch64-linux-gnu-gcc)
+# set(CMAKE_CXX_COMPILER aarch64-linux-gnu-g++)
 
 # enable compilation optimization
 if(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE Release)
 endif()
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=rv64imafdcv0p7xthead")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3")
 set(CMAKE_CXX_FLAGS_RELEASE -Ofast)
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -O3")

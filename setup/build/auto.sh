@@ -1,3 +1,3 @@
 #!/bin/bash
-./clean.sh
 ./build.sh
+./scp.sh
