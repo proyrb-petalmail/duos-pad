@@ -34,10 +34,15 @@ static lv_obj_t *cnt_btn = NULL;     /*刷新按钮*/
 static lv_obj_t *wln_bar = NULL;     /*wlan状态栏*/
 static lv_obj_t *wln_bar_lab = NULL; /*wlan状态栏标签*/
 static lv_obj_t *wln_bar_led = NULL; /*wlan状态栏指示灯*/
+static lv_obj_t *wln_nam = NULL;     /*wifi名称文本框*/
+static lv_obj_t *wln_pwd = NULL;     /*wifi密码文本框*/
+static lv_obj_t *key_bod = NULL;     /*键盘*/
 
-static lv_style_t bgc_def_sty;     /*应用背景容器在默认状态下的样式*/
-static lv_style_t top_bar_def_sty; /*应用顶部栏在默认状态下的样式*/
-static lv_style_t wln_bar_def_sty; /*应用顶部栏在默认状态下的样式*/
+static lv_style_t bgc_def_sty;         /*应用背景容器在默认状态下的样式*/
+static lv_style_t top_bar_def_sty;     /*应用顶部栏在默认状态下的样式*/
+static lv_style_t wln_bar_def_sty;     /*WLAN栏在默认状态下的样式*/
+static lv_style_t wln_txt_are_def_sty; /*Wifi名称文本栏在默认状态下的样式*/
+static lv_style_t wln_txt_are_foc_sty; /*Wifi名称文本栏在获焦状态下的样式*/
 
 const static lv_style_prop_t ext_btn_def_sty_pop[] = {
     LV_STYLE_WIDTH,
@@ -163,16 +168,39 @@ static void style_init(void)
     lv_style_set_transition(&cnt_btn_def_pre_sty, &cnt_btn_def_pre_sty_tst_dsc); /*设置过渡动画*/
 
     /*设置wlan的状态栏样式*/
-    lv_style_set_width(&wln_bar_def_sty, MY_DISP_HOR_RES * 0.8);                                       /*设置宽度*/
-    lv_style_set_height(&wln_bar_def_sty, TOP_BAR_SIZE);                                               /*设置高度*/
-    lv_style_set_align(&wln_bar_def_sty, LV_ALIGN_CENTER);                                             /*设置布局基准为父对象中心*/
-    lv_style_set_x(&wln_bar_def_sty, 0);                                                               /*设置x坐标*/
-    lv_style_set_y(&wln_bar_def_sty, TOP_BAR_SIZE * 1.2 + (TOP_BAR_SIZE / 2) - (MY_DISP_VER_RES / 2)); /*设置y坐标：顶部*/
-    lv_style_set_bg_color(&wln_bar_def_sty, lv_color_hex(0xFFFFFF));                                   /*设置背景颜色*/
-    lv_style_set_bg_opa(&wln_bar_def_sty, LV_OPA_COVER);                                               /*设置透明度：覆盖*/
-    lv_style_set_radius(&wln_bar_def_sty, EXT_BTN_DEF_SIZ / 4);                                        /*设置圆角*/
-    lv_style_set_shadow_width(&wln_bar_def_sty, 50);                                                   /*设置阴影范围*/
-    lv_style_set_shadow_spread(&wln_bar_def_sty, -14);                                                 /*设置阴影传播*/
+    lv_style_set_width(&wln_bar_def_sty, MY_DISP_HOR_RES * 0.8);                                        /*设置宽度*/
+    lv_style_set_height(&wln_bar_def_sty, TOP_BAR_SIZE);                                                /*设置高度*/
+    lv_style_set_align(&wln_bar_def_sty, LV_ALIGN_CENTER);                                              /*设置布局基准为父对象中心*/
+    lv_style_set_x(&wln_bar_def_sty, 0);                                                                /*设置x坐标*/
+    lv_style_set_y(&wln_bar_def_sty, TOP_BAR_SIZE * 1.25 + (TOP_BAR_SIZE / 2) - (MY_DISP_VER_RES / 2)); /*设置y坐标：顶部*/
+    lv_style_set_bg_color(&wln_bar_def_sty, lv_color_hex(0xFFFFFF));                                    /*设置背景颜色*/
+    lv_style_set_bg_opa(&wln_bar_def_sty, LV_OPA_COVER);                                                /*设置透明度：覆盖*/
+    lv_style_set_radius(&wln_bar_def_sty, EXT_BTN_DEF_SIZ / 4);                                         /*设置圆角*/
+    lv_style_set_shadow_width(&wln_bar_def_sty, 50);                                                    /*设置阴影范围*/
+    lv_style_set_shadow_spread(&wln_bar_def_sty, -14);                                                  /*设置阴影传播*/
+
+    /*设置wifi名称文本框在默认状态下的样式*/
+    lv_style_init(&wln_txt_are_def_sty);                                 /*初始化样式*/
+    lv_style_set_width(&wln_txt_are_def_sty, MY_DISP_HOR_RES * 0.8);     /*设置宽度*/
+    lv_style_set_height(&wln_txt_are_def_sty, TOP_BAR_SIZE);             /*设置高度*/
+    lv_style_set_align(&wln_txt_are_def_sty, LV_ALIGN_CENTER);           /*设置布局基准为父对象中心*/
+    lv_style_set_x(&wln_txt_are_def_sty, 0);                             /*设置x坐标：左侧*/
+    lv_style_set_bg_color(&wln_txt_are_def_sty, lv_color_hex(0xFFFFFF)); /*设置背景颜色*/
+    lv_style_set_bg_opa(&wln_txt_are_def_sty, LV_OPA_COVER);             /*设置透明度：覆盖*/
+    lv_style_set_radius(&wln_txt_are_def_sty, EXT_BTN_DEF_SIZ / 4);      /*设置圆角*/
+    lv_style_set_shadow_width(&wln_txt_are_def_sty, 50);                 /*设置阴影范围*/
+    lv_style_set_shadow_spread(&wln_txt_are_def_sty, -14);               /*设置阴影传播*/
+    lv_style_set_text_font(&wln_txt_are_def_sty, &lv_font_montserrat_30);
+    lv_style_set_pad_top(&wln_txt_are_def_sty, 20);
+    lv_style_set_pad_bottom(&wln_txt_are_def_sty, 20);
+    lv_style_set_pad_left(&wln_txt_are_def_sty, 30);
+    lv_style_set_pad_right(&wln_txt_are_def_sty, 30);
+
+    /*设置wifi名称文本框在获焦状态下的样式*/
+    lv_style_init(&wln_txt_are_foc_sty);                                     /*初始化样式*/
+    lv_style_set_border_color(&wln_txt_are_foc_sty, lv_color_hex(0xBBBBBB)); /*设置边框颜色*/
+    lv_style_set_border_opa(&wln_txt_are_foc_sty, LV_OPA_COVER);             /*设置边框透明度*/
+    lv_style_set_border_width(&wln_txt_are_foc_sty, 3);                      /*设置边框宽度*/
 }
 
 /*获取当前wlan状态*/
@@ -195,7 +223,7 @@ static int get_wln_sta(void)
 }
 
 /*定时器的回调函数*/
-void timer_cb(lv_timer_t *timer)
+static void timer_cb(lv_timer_t *timer)
 {
     wln_sta = get_wln_sta(); /*检测WLAN的网络连接状态*/
     if (0 == wln_sta)
@@ -250,12 +278,35 @@ static void btn_sht_clk_evt_cb(lv_event_t *evt)
     {
         if (0 == wln_sta)
         {
+            system("ifconfig wlan0 down");
             system("ps | grep \"wpa_supplicant\" | awk '{print $1}' | head - n1 | xargs kill"); /*结束WLAN相关的网络进程*/
         }
         else
         {
-            system("wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf"); /*重新运行WLAN相关的网络进程*/
+            system("ifconfig wlan0 up");
+            sprintf(cmd_buf,
+                    "echo \"ctrl_interface=/var/run/wpa_supplicant\n"
+                    "ap_scan=1\nupdate_config=1\nnetwork={\n"
+                    "    ssid=\\\"%s\\\"\n    psk=\\\"%s\\\"\n"
+                    "    key_mgmt=WPA-PSK\n}\" > /etc/wpa_supplicant.conf",
+                    lv_textarea_get_text(wln_nam), lv_textarea_get_text(wln_pwd)); /*生成更新wifi配置的命令*/
+            system(cmd_buf);                                                       /*执行更新wifi配置文件的命令*/
+            system("wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf");      /*重新运行WLAN相关的网络进程*/
         }
+    }
+}
+
+/*文本框获焦事件的回调函数*/
+static void txt_are_foc_evt_cb(lv_event_t *evt)
+{
+    lv_obj_t *evt_txt_are = lv_event_get_target(evt); /*获取事件产生的源头组件*/
+    if (wln_nam == evt_txt_are)
+    {
+        lv_keyboard_set_textarea(key_bod, wln_nam); /*绑定文本框*/
+    }
+    else if (wln_pwd == evt_txt_are)
+    {
+        lv_keyboard_set_textarea(key_bod, wln_pwd); /*绑定文本框*/
     }
 }
 
@@ -310,20 +361,56 @@ void app_int(void)
     lv_obj_add_style(wln_bar, &wln_bar_def_sty, LV_STATE_DEFAULT); /*为默认状态添加样式*/
     lv_obj_clear_flag(wln_bar, LV_OBJ_FLAG_ALL);                   /*清除所有标志*/
 
-    /*顶部栏标签*/
+    /*wlan栏左侧标签*/
     wln_bar_lab = lv_label_create(wln_bar);                                            /*创建wln栏左侧的标签*/
     lv_label_set_text(wln_bar_lab, "WLAN Connect State");                              /*设置文本*/
     lv_obj_set_style_text_font(wln_bar_lab, &lv_font_montserrat_30, LV_STATE_DEFAULT); /*设置字体大小*/
     lv_obj_set_align(wln_bar_lab, LV_ALIGN_LEFT_MID);                                  /*居中*/
-    lv_obj_set_x(wln_bar_lab, 30);
-    lv_obj_clear_flag(wln_bar_lab, LV_OBJ_FLAG_ALL); /*清除所有标志*/
+    lv_obj_set_x(wln_bar_lab, 30);                                                     /*设置相对x坐标*/
+    lv_obj_clear_flag(wln_bar_lab, LV_OBJ_FLAG_ALL);                                   /*清除所有标志*/
 
-    /*wlan栏标签*/
+    /*wlan栏右侧指示灯*/
     wln_bar_led = lv_led_create(wln_bar);              /*创建wln状态栏右侧的指示灯*/
     lv_obj_set_size(wln_bar_led, 50, 50);              /*设置尺寸*/
     lv_obj_set_align(wln_bar_led, LV_ALIGN_RIGHT_MID); /*居中*/
     lv_obj_set_x(wln_bar_led, -30);                    /*左侧边距*/
     lv_obj_clear_flag(wln_bar_led, LV_OBJ_FLAG_ALL);   /*清除所有标志*/
+
+    /*Wifi名称文本框*/
+    wln_nam = lv_textarea_create(bgc);                                                                               /*创建文本框*/
+    lv_obj_add_style(wln_nam, &wln_txt_are_def_sty, LV_STATE_DEFAULT);                                               /*为默认状态添加样式*/
+    lv_obj_set_style_y(wln_nam, TOP_BAR_SIZE * 2.34 + (TOP_BAR_SIZE / 2) - (MY_DISP_VER_RES / 2), LV_STATE_DEFAULT); /*设置y坐标*/
+    lv_obj_add_style(wln_nam, &wln_txt_are_foc_sty, LV_STATE_FOCUSED);                                               /*为获焦状态添加样式*/
+    lv_obj_clear_flag(wln_nam, LV_OBJ_FLAG_ALL);                                                                     /*清除所有标志*/
+    lv_obj_add_flag(wln_nam,
+                    LV_OBJ_FLAG_CLICKABLE |
+                        LV_OBJ_FLAG_CLICK_FOCUSABLE |
+                        LV_OBJ_FLAG_SCROLLABLE); /*添加可点击，可通过点击获焦，允许滚动*/
+    lv_textarea_set_placeholder_text(wln_nam, "Name");
+    lv_textarea_set_one_line(wln_nam, true);                                  /*设置为单行模式*/
+    lv_textarea_set_cursor_click_pos(wln_nam, true);                          /*设置触摸改变光标位置*/
+    lv_obj_add_event_cb(wln_nam, txt_are_foc_evt_cb, LV_EVENT_FOCUSED, NULL); /*为获焦事件添加回调函数*/
+
+    /*Wifi密码文本框*/
+    wln_pwd = lv_textarea_create(bgc);                                                                               /*创建文本框*/
+    lv_obj_add_style(wln_pwd, &wln_txt_are_def_sty, LV_STATE_DEFAULT);                                               /*为默认状态添加样式*/
+    lv_obj_set_style_y(wln_pwd, TOP_BAR_SIZE * 3.33 + (TOP_BAR_SIZE / 2) - (MY_DISP_VER_RES / 2), LV_STATE_DEFAULT); /*设置y坐标*/
+    lv_obj_add_style(wln_pwd, &wln_txt_are_foc_sty, LV_STATE_FOCUSED);                                               /*为获焦状态添加样式*/
+    lv_obj_clear_flag(wln_pwd, LV_OBJ_FLAG_ALL);                                                                     /*清除所有标志*/
+    lv_obj_add_flag(wln_pwd,
+                    LV_OBJ_FLAG_CLICKABLE |
+                        LV_OBJ_FLAG_CLICK_FOCUSABLE |
+                        LV_OBJ_FLAG_SCROLLABLE); /*添加可点击，可通过点击获焦，允许滚动*/
+    lv_textarea_set_placeholder_text(wln_pwd, "Password");
+    lv_textarea_set_one_line(wln_pwd, true);                                  /*设置为单行模式*/
+    lv_textarea_set_cursor_click_pos(wln_pwd, true);                          /*设置触摸改变光标位置*/
+    lv_obj_add_event_cb(wln_pwd, txt_are_foc_evt_cb, LV_EVENT_FOCUSED, NULL); /*为获焦事件添加回调函数*/
+
+    /*键盘*/
+    key_bod = lv_keyboard_create(bgc);                                             /*创建键盘*/
+    lv_obj_set_size(key_bod, MY_DISP_HOR_RES, MY_DISP_VER_RES / 3);                /*限制尺寸*/
+    lv_obj_set_style_text_font(key_bod, &lv_font_montserrat_30, LV_STATE_DEFAULT); /*设置字体大小*/
+    lv_keyboard_set_popovers(key_bod, true);                                       /*允许按下按键时弹出提示*/
 
     /*定时检测WLAN的连接状态*/
     lv_timer_t *timer = lv_timer_create(timer_cb, 200, NULL); /*创建定时器*/
