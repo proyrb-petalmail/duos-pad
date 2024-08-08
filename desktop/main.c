@@ -77,13 +77,13 @@ static void set_fil_sys_dir(void)
 /*获取应用存放目录*/
 static void get_app_dir(void)
 {
+    strcpy(app_dir, slf_dir);         /*复制slf_dir至app_dir*/
+    strcat(app_dir, "/" APP_DIR_NAM); /*再在app_dir末尾追加"/app"得到应用储存目录*/
     sprintf(cmd_buf,
             "ls -d --color=none %s/*/ > %s/%s",
             app_dir,
             app_dir,
             APP_LST_FIL);             /*获取应用储存目录中应用的列表*/
-    strcpy(app_dir, slf_dir);         /*复制slf_dir至app_dir*/
-    strcat(app_dir, "/" APP_DIR_NAM); /*再在app_dir末尾追加"/app"得到应用储存目录*/
     if (256 == system(cmd_buf))
     {
         char tmp_buf[CMD_MAX_LEN] = {0};

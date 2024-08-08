@@ -283,6 +283,8 @@ static void btn_sht_clk_evt_cb(lv_event_t *evt)
         }
         else
         {
+            system("ifconfig wlan0 down");
+            system("ps | grep \"wpa_supplicant\" | awk '{print $1}' | head - n1 | xargs kill"); /*结束WLAN相关的网络进程*/
             system("ifconfig wlan0 up");
             sprintf(cmd_buf,
                     "echo \"ctrl_interface=/var/run/wpa_supplicant\n"
@@ -413,7 +415,8 @@ void app_int(void)
     lv_keyboard_set_popovers(key_bod, true);                                       /*允许按下按键时弹出提示*/
 
     /*定时检测WLAN的连接状态*/
-    lv_timer_t *timer = lv_timer_create(timer_cb, 200, NULL); /*创建定时器*/
-    lv_timer_set_repeat_count(timer, -1);                     /*无限重复*/
-    lv_timer_ready(timer);                                    /*在下次心跳时调用*/
+    lv_timer_t *timer = lv_timer_create(timer_cb, 200, NULL);         /*创建定时器*/
+    lv_timer_set_repeat_count(timer, -1);                             /*无限重复*/
+    lv_timer_ready(timer);                                            /*在下次心跳时调用*/
+    system("wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf"); /*初始化WLAN相关的网络进程*/
 }

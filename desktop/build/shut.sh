@@ -8,3 +8,5 @@ rmmod /mnt/system/ko/3rd/gt9xx.ko
 
 echo -e "[unloading cvi_fb.ko]"
 rmmod /mnt/system/ko/cvi_fb.ko
+
+cat /dev/zero > /dev/fb0
